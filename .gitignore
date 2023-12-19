@@ -1,0 +1,8 @@
+**/data
+datasets/scalers.pickle
+datasets/X_arome.pickle
+datasets/X_closest.pickle
+datasets/X_gs.pickle
+datasets/X_reduced.pickle
+datasets/X_reduced_231219.pickle
+datasets/Y.pickle
