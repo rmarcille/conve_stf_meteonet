@@ -1,4 +1,4 @@
-# ConvE-STF MeteoNet - Marcille et. al 2023
+# ConvE-STF MeteoNet
 
 ## Introduction
 This repository contains the code for reproducing the results of Marcille et al. 2024. It proposes a framework for short-term probabilistic wind forecasting. 
