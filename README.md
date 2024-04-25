@@ -1,4 +1,4 @@
-# ConvE-STF MeteoNet
+# ConvE-STF MeteoNet - Marcille et al. 2024
 
 ## Introduction
 This repository contains the code for reproducing the results of Marcille et al. 2024. It proposes a framework for short-term probabilistic wind forecasting. 
@@ -53,7 +53,7 @@ This work is attached to a MIT License of use
 ## References
 
 `conve_stf_meteonet` is attached to the following publication 
-> R. Marcille, P. Tandeo, M. Thiébaut, P. Pinson, R. Fablet - Convolutional encoding and normalizing flows: a deep learning approach for offshore wind speed probabilistic forecasting. AIES. 2024
+> R. Marcille, P. Tandeo, M. Thiébaut, P. Pinson, R. Fablet - Convolutional encoding and normalizing flows: a deep learning approach for offshore wind speed probabilistic forecasting in the Mediterranean Sea. AIES. 2024
 > [[arXiv]]
 
 It uses the `nflows` library, and proposes a novel conditioned multivariate gaussian.
