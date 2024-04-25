@@ -1,5 +1,4 @@
 import torch
-from scipy.stats import multivariate_normal
 import random
 from scipy.interpolate import CubicSpline
 from tqdm import tqdm
@@ -10,9 +9,12 @@ def sample_flow(ypred, flow, n_samples = 1000):
     ypred = ypred.permute(1, 0, 2).contiguous().view(5, -1).permute(1, 0)
     multi_distrib = torch.zeros(ypred.shape[0], n_samples, 2)
     with torch.no_grad():
-        for i in tqdm(range(ypred.shape[0])):
-            samples_gen = torch.tensor(flow.sample(n_samples, context = ypred[i, :].cpu().float()))
-            multi_distrib[i, :, :] = samples_gen.reshape((1, n_samples, 2))
+        batch_size = 1500
+        idx_multi = 0
+        for i, batch in enumerate(torch.split(ypred, batch_size)):
+            samples = flow.sample(n_samples, context = batch)
+            multi_distrib[idx_multi:idx_multi + samples.shape[0], :] = samples 
+            idx_multi += samples.shape[0]
     return multi_distrib
 
 def sample_gaussian(ypred, n_samples = 1000):
@@ -21,19 +23,15 @@ def sample_gaussian(ypred, n_samples = 1000):
     mean = ypred[:, :2]
     variables = ypred[:, 2:4]
     cov = ypred[:, 4]   
-
-    cov = cov
     variables = variables + (variables < eps)*eps
     std =  torch.diag_embed(variables, dim1 = 1)
     std[:, 1, 0] = cov*torch.sqrt(variables[:, 0])*torch.sqrt(variables[:, 1])
     std[:, 0, 1] = std[:, 1, 0]
     std_matrix = std
-    multi_distrib = torch.zeros((ypred.shape[0], n_samples, 2))
     with torch.no_grad():
-        for i in tqdm(range(ypred.shape[0])):
-            samples_gen = torch.tensor(multivariate_normal.rvs(mean[i, :].cpu().detach(), std_matrix[i, :, :].cpu().detach(), n_samples))
-            multi_distrib[i, :, :] = samples_gen.reshape((1, n_samples, 2))
+        multi_distrib = torch.distributions.MultivariateNormal(mean, std_matrix).rsample(torch.Size([n_samples])).permute(1, 0, 2)
     return multi_distrib
+
 
 
 def sample_gbm(y, ypred, quantiles, n_samples = 1000):
